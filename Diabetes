@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Test</title>
+</head>
+<body>
+
+<iframe id="calculatorFrame" src="https://qxmd.com/calculate/calculator_236/findrisc-diabetes-risk-calculator?embed=1" style="border:0; box-shadow:none; min-height:720px; min-width:310px; width:100%; max-width:720px; overflow:hidden;"></iframe>
+
+<script>
+    function sendDataToGoogleSheets() {
+        // Access the contentWindow of the iframe
+        var iframeContent = document.getElementById('calculatorFrame').contentWindow;
+
+        // Get the form data
+        var formData = new FormData(iframeContent.document.forms[0]);
+
+        // Send the data to Google Sheets using the Google Sheets API (example)
+        // Note: You'll need to set up the Google Sheets API and obtain API key and spreadsheet ID
+        var googleSheetsApiUrl = "https://sheets.googleapis.com/v4/spreadsheets/{1Cha0TcJryhmqgHIZV_ym_EErPRd74qkUR-fhLWIcbq0}/values/{diabetes log}?key={AIzaSyAPPpKf_STmHHm68VZ8cbslfr1j4PpLE4k}";
+
+        fetch(googleSheetsApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                values: [Array.from(formData.values())]
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data sent to Google Sheets:', data);
+          
+        })
+        .catch(error => {
+            console.error('Error sending data to Google Sheets:', error);
+        });
+    }
+
+    
+    setInterval(sendDataToGoogleSheets, 6000); 
+
+</body>
+</html>
